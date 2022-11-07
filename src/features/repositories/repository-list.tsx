@@ -16,6 +16,7 @@ export const RepositoryList = (props: RepositoryListProps) => {
           description={node?.description}
           name={node?.name}
           full_name={encodeURIComponent(node?.full_name)}
+          open_issues_count={node?.open_issues_count}
         />
       ))}
     </Grid>

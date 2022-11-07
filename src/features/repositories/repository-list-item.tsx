@@ -14,7 +14,18 @@ export const RepositoryListItem = (props: RepositoryListItemProps) => {
       <Card variant="outlined">
         <CardContent>
           <Typography gutterBottom variant="h5">
-            {name}
+            {name} <Chip
+              variant="outlined"
+              color="primary"
+              size="small"
+              sx={{
+                borderRadius: 'sm',
+                py: 0.25,
+                px: 0.5,
+                ml: 1,
+              }}
+              label={`Open issues ${open_issues_count}`}
+            ></Chip>
           </Typography>
           <Typography color="text.secondary" variant="body2">
             {description}
