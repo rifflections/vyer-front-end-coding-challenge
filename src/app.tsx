@@ -3,12 +3,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMemo } from "react";
-import { RelayEnvironmentProvider } from "react-relay/hooks";
 
 import Repositories from "./features/repositories/repositories";
-import RelayEnvironment from "./relay-environment";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const App = () => {
+  const queryClient = new QueryClient();
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const theme = useMemo(
     () =>
@@ -22,11 +23,12 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline enableColorScheme />
-      <RelayEnvironmentProvider environment={RelayEnvironment}>
+      <QueryClientProvider client={queryClient}>
         <Container component={Box} p={2}>
           <Repositories />
         </Container>
-      </RelayEnvironmentProvider>
+        <ReactQueryDevtools initialIsOpen />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 };
