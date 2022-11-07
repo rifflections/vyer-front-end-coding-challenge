@@ -1,16 +1,27 @@
 import { Typography, List, Button } from "@mui/material";
-import { IssueListItem } from "./issue-list-item";
 
-import { Issue } from "../../service/repositories";
 import { Link as RouterLink } from 'react-router-dom';
 
+import { IssueListItem } from "./issue-list-item";
+
+import { SearchIssuesResponse } from "../../service/repositories";
+import { PaginationComponent } from '../../components/pagination';
+import { LoadingWrapper } from "../../components/loading";
+import { ErrorWrapper } from "../../components/error";
+
 interface IssueListProps {
-  data: Issue[],
-  repoName: string
+  isLoading: boolean;
+  error?: string;
+  data?: SearchIssuesResponse,
+  title: string,
+  page: number,
+  pageChange: (event: React.ChangeEvent<unknown>, page: number) => void,
 }
 
 export const IssueList = (props: IssueListProps) => {
-  const message = props.data.length === 0 ? 'No open issues' : 'Open issues';
+  const { data, page, isLoading, error } = props;
+  const itemsPerPage: number = 25;
+
   return (
     <div>
       <Button variant="outlined" component={RouterLink} to="/" sx={{ mb: 2 }}>Back to repositories</Button>
@@ -19,15 +30,31 @@ export const IssueList = (props: IssueListProps) => {
         textTransform="uppercase"
         fontWeight="xl"
         mb={1}
-      >{`${message} for '${props.repoName}' repository`}</Typography>
-      <List aria-labelledby="issue-list">
-        {props.data.map((node) => (
-          <IssueListItem
-            key={node?.id}
-            title={node?.title}
-          />
-        ))}
-      </List>
+      >{`${data && data.items.length === 0 ? 'No open issues' : 'Open issues'} for '${props.title}' repository`}</Typography>
+
+      {isLoading && (<LoadingWrapper message='Loading results...' />)}
+      {error && (<ErrorWrapper message={error} />)}
+
+      {data && (
+        <>
+          <List aria-labelledby="issue-list">
+            {data.items.map((item) => (
+              <IssueListItem
+                key={item?.id}
+                title={item?.title}
+              />
+            ))}
+          </List>
+          {
+            (data.total_count > itemsPerPage) && (
+              <PaginationComponent
+                page={page}
+                count={Math.floor(data.total_count / itemsPerPage)}
+                pageChange={props.pageChange} />
+            )
+          }
+        </>
+      )}
     </div>
   );
 };

@@ -1,9 +1,8 @@
-import { Typography } from "@mui/material";
-
-import { repositories } from "../../service/repositories";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 
+import { repositories } from "../../service/repositories";
 import { IssueList } from "./issue-list";
 
 type IssueParam = {
@@ -13,18 +12,22 @@ type IssueParam = {
 const Issues = () => {
   const { repoName } = useParams<IssueParam>();
   const decodedRepoName = decodeURIComponent(repoName);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 25;
 
   const { isLoading, error, data } = useQuery(
-    `issues-${repoName}`,
-    () => repositories.searchIssues(`state:open sort:updated-asc repo:${decodedRepoName}`)
+    [`issues-${repoName}`, page],
+    () => repositories.searchIssues(`state:open sort:updated-asc repo:${decodedRepoName}`, page, itemsPerPage)
   );
 
   return (
-    <>
-      {isLoading && (<Typography>Loading...</Typography>)}
-      {error && (<Typography>An error poped up: {error}</Typography>)}
-      {data && (<IssueList data={data} repoName={decodedRepoName} />)}
-    </>
+    <IssueList
+      isLoading={isLoading}
+      error={error}
+      data={data}
+      page={page}
+      title={decodedRepoName}
+      pageChange={(event: React.ChangeEvent<unknown>, value: number) => setPage(value)} />
   );
 };
 

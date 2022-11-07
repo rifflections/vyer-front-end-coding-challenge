@@ -13,9 +13,14 @@ export type Issue = {
   title: string;
 };
 
+export type SearchIssuesResponse = {
+  items: Issue[];
+  total_count: number;
+}
+
 export type RepositoryService = {
   search: (query?: string) => Promise<Repository[]>;
-  searchIssues: (query?: string) => Promise<Issue[]>;
+  searchIssues: (query?: string, page?: number, per_page?: number) => Promise<SearchIssuesResponse>;
 };
 
 export const repositories: RepositoryService = {
@@ -23,8 +28,11 @@ export const repositories: RepositoryService = {
     const response = await http.get("/repositories", { params: { q: query } });
     return response.data.items;
   },
-  searchIssues: async (query) => {
-    const response = await http.get("/issues", { params: { q: query } });
-    return response.data.items;
+  searchIssues: async (query, page, per_page) => {
+    const response = await http.get("/issues", { params: { q: query, page, per_page } });
+    return {
+      items: response.data.items,
+      total_count: response.data.total_count
+    };
   }
 };
