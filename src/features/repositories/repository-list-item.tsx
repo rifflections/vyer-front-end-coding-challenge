@@ -1,6 +1,9 @@
-import { Card, Chip, CardContent, Grid, Typography } from "@mui/material";
+import { Card, Chip, CardContent, Grid, Typography, Link } from "@mui/material";
+
+import { Link as RouterLink } from "react-router-dom";
 
 interface RepositoryListItemProps {
+  id: number;
   description?: string | null;
   name?: string;
   full_name?: string;
@@ -8,13 +11,13 @@ interface RepositoryListItemProps {
 }
 
 export const RepositoryListItem = (props: RepositoryListItemProps) => {
-  const { description, name, open_issues_count } = props;
+  const { id, description, name, full_name, open_issues_count } = props;
   return (
     <Grid item xs={3}>
       <Card variant="outlined">
         <CardContent>
           <Typography gutterBottom variant="h5">
-            {name} <Chip
+            {name} <Link component={RouterLink} to={`/issues/${full_name}`} key={id}><Chip
               variant="outlined"
               color="primary"
               size="small"
@@ -25,7 +28,7 @@ export const RepositoryListItem = (props: RepositoryListItemProps) => {
                 ml: 1,
               }}
               label={`Open issues ${open_issues_count}`}
-            ></Chip>
+            ></Chip></Link>
           </Typography>
           <Typography color="text.secondary" variant="body2">
             {description}

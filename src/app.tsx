@@ -5,8 +5,12 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useMemo } from "react";
 
 import Repositories from "./features/repositories/repositories";
+import Issues from "./features/issues/issues";
+
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+
+import { Routes, Route } from "react-router-dom";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -25,7 +29,10 @@ const App = () => {
       <CssBaseline enableColorScheme />
       <QueryClientProvider client={queryClient}>
         <Container component={Box} p={2}>
-          <Repositories />
+          <Routes>
+            <Route path="/" element={<Repositories />} />
+            <Route path="issues/:repoName" element={<Issues />} />
+          </Routes>
         </Container>
         <ReactQueryDevtools initialIsOpen />
       </QueryClientProvider>

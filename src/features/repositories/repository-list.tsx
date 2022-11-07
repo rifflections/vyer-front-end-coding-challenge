@@ -12,6 +12,7 @@ export const RepositoryList = (props: RepositoryListProps) => {
     <Grid container direction="column" spacing={2}>
       {props.data.map((node) => (
         <RepositoryListItem
+          id={node?.id}
           key={node?.id}
           description={node?.description}
           name={node?.name}
